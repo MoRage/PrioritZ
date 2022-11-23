@@ -1,0 +1,87 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_contoso-5fbadges-20connector-5fac6f9f4eb4454547": {
+        "runtimeSource": "invoker",
+        "connection": {
+          "connectionReferenceLogicalName": "contoso_sharedcontoso5fbadges20connector5fac6f9f4eb4454547_79a35"
+        },
+        "api": {
+          "name": "shared_contoso-5fbadges-20connector-5fac6f9f4eb4454547",
+          "logicalName": "contoso_5Fbadges-20connector"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "6e4001b6-931f-4d3d-9184-89d240cf09ee"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            },
+            "headersSchema": {
+              "x-ms-user-email-encoded": {
+                "title": "User email",
+                "type": "string",
+                "format": "byte",
+                "x-ms-dynamically-added": false
+              },
+              "x-ms-user-name-encoded": {
+                "title": "User name",
+                "type": "string",
+                "format": "byte",
+                "x-ms-dynamically-added": false
+              }
+            }
+          }
+        }
+      },
+      "actions": {
+        "Add_Credit": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "9495c188-952c-4942-8f62-4ab3ceda4f84"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_contoso-5fbadges-20connector-5fac6f9f4eb4454547",
+              "operationId": "AddCredit",
+              "apiId": ""
+            },
+            "parameters": {
+              "body/recipientId": "@triggerOutputs()['headers']['x-ms-user-email-encoded']",
+              "body/name": "@triggerOutputs()['headers']['x-ms-user-name-encoded']",
+              "body/points": 1
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}
